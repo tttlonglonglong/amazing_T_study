@@ -1,5 +1,5 @@
-~/.gitignor
+~/.gitignore
 .DS_Store
 */.DS_Store
 node_modules
-*/node_modulesee
+*/node_modules
