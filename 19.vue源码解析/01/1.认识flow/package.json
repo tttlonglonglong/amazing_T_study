@@ -1,0 +1,12 @@
+{
+  "name": "",
+  "version": "",
+  "scripts": {
+    "flow": "flow"
+  },
+  "devDependencies": {
+    "@types/sequelize": "^4.27.23",
+    "flow-bin": "^0.75.0",
+    "typescript": "^2.9.2"
+  }
+}
