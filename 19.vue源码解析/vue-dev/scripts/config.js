@@ -1,3 +1,5 @@
+// build.js 打包所需要的配置
+
 const path = require('path')
 const buble = require('rollup-plugin-buble')
 const alias = require('rollup-plugin-alias')
@@ -8,6 +10,7 @@ const flow = require('rollup-plugin-flow-no-whitespace')
 const version = process.env.VERSION || require('../package.json').version
 const weexVersion = process.env.WEEX_VERSION || require('../packages/weex-vue-framework/package.json').version
 
+  /
 const banner =
   '/*!\n' +
   ' * Vue.js v' + version + '\n' +
@@ -30,6 +33,7 @@ const resolve = p => {
   if (aliases[base]) {
     return path.resolve(aliases[base], p.slice(base.length + 1))
   } else {
+    // alias 里面不存在真实路径的时候，直接去上一级，目录的dist (这个一般是打包后的输出目录）
     return path.resolve(__dirname, '../', p)
   }
 }
@@ -38,9 +42,13 @@ const resolve = p => {
 const builds = {
   // Runtime only (CommonJS). Used by bundlers e.g. Webpack & Browserify
   'web-runtime-cjs': {
+    // 打包的文件入口
     entry: resolve('web/entry-runtime.js'),
+    // 打包的文件输出
     dest: resolve('dist/vue.runtime.common.js'),
+    // 构建的文件格式， js规范： cjs： module.exports ，es: export default
     format: 'cjs',
+    // banner是一个局部变量，一个注释， 库的版本，构建时间，license....
     banner
   },
   // Runtime+compiler CommonJS build (CommonJS)
@@ -169,6 +177,7 @@ const builds = {
   }
 }
 
+// 拿到buidskey对应的打包设置， 构造出一个新的config打包配置， 对应rollup的打包配置
 function genConfig(name) {
   const opts = builds[name]
   const config = {
@@ -207,8 +216,13 @@ function genConfig(name) {
 }
 
 if (process.env.TARGET) {
+  // 导出数据或者函数
   module.exports = genConfig(process.env.TARGET)
 } else {
+  // 导出 键值对象的这种格式
   exports.getBuild = genConfig
+  // Object.keys(builds: 拿到builds所有key的数组， genConfig拿到builds[key]的对象， 然后构造出一个新的cpnfig对象，
+  // 新的cpnfig对象， 就是rollup打包的配置结构---相当于把builds的配置 --》映射成rollup的配置
+  // map接收的是一个函数，一般写是item =>{}, 现在接收的是 genConfig
   exports.getAllBuilds = () => Object.keys(builds).map(genConfig)
 }

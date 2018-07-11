@@ -2,6 +2,8 @@ const path = require('path')
 
 const resolve = p => path.resolve(__dirname, '../', p)
 
+// 不同版本vuejs，resolve的不同打包方式
+// alias提供到 真实文件地址的映射关系
 module.exports = {
   vue: resolve('src/platforms/web/entry-runtime-with-compiler'),
   compiler: resolve('src/compiler'),
