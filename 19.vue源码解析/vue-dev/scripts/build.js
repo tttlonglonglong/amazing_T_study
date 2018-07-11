@@ -8,9 +8,11 @@ if (!fs.existsSync('dist')) {
   fs.mkdirSync('dist')
 }
 
+// 拿到要构建的所有配置
 let builds = require('./config').getAllBuilds()
 
 // filter builds via command line arg
+// 拿到配置后，对配置做一层过滤，是针对什么平台做构建：weex, ssr,web, 最终调用build函数做真正的构建
 if (process.argv[2]) {
   const filters = process.argv[2].split(',')
   builds = builds.filter(b => {
@@ -25,7 +27,7 @@ if (process.argv[2]) {
 
 build(builds)
 
-function build (builds) {
+function build(builds) {
   let built = 0
   const total = builds.length
   const next = () => {
@@ -40,7 +42,7 @@ function build (builds) {
   next()
 }
 
-function buildEntry (config) {
+function buildEntry(config) {
   const output = config.output
   const { file, banner } = output
   const isProd = /min\.js$/.test(file)
@@ -63,9 +65,9 @@ function buildEntry (config) {
     })
 }
 
-function write (dest, code, zip) {
+function write(dest, code, zip) {
   return new Promise((resolve, reject) => {
-    function report (extra) {
+    function report(extra) {
       console.log(blue(path.relative(process.cwd(), dest)) + ' ' + getSize(code) + (extra || ''))
       resolve()
     }
@@ -84,14 +86,14 @@ function write (dest, code, zip) {
   })
 }
 
-function getSize (code) {
+function getSize(code) {
   return (code.length / 1024).toFixed(2) + 'kb'
 }
 
-function logError (e) {
+function logError(e) {
   console.log(e)
 }
 
-function blue (str) {
+function blue(str) {
   return '\x1b[1m\x1b[34m' + str + '\x1b[39m\x1b[22m'
 }
